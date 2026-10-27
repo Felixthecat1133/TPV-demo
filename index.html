@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Tap to Phone - TPV Demo</title>
+  <title>Tap to Phone - Multioperación</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @keyframes pulse-ring {
@@ -12,131 +12,304 @@
       100% { transform: scale(0.95); opacity: 0.8; }
     }
     .pulse { animation: pulse-ring 2s infinite ease-in-out; }
-    /* Prevenir selección de texto al tocar rápidamente */
     .no-select { user-select: none; -webkit-user-select: none; }
   </style>
 </head>
-<body class="bg-blue-900 text-white min-h-screen flex flex-col justify-between p-4 no-select font-sans">
+<body class="bg-blue-900 text-white min-h-screen flex flex-col p-4 no-select font-sans">
 
-  <!-- Header -->
-  <div class="flex justify-between items-center text-blue-200 text-sm p-2">
-    <span>Terminal: #0042</span>
+  <!-- Header Dinámico -->
+  <div class="flex justify-between items-center text-blue-200 text-sm mb-4">
+    <button id="btn-back" onclick="goHome()" class="hidden text-yellow-400 font-bold flex items-center">
+      <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg> Inicio
+    </button>
+    <span id="header-term">Terminal: #0042</span>
     <div class="flex items-center gap-2">
-      <span>En línea</span>
       <span class="inline-block w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
     </div>
   </div>
 
-  <!-- Pantalla 1: Ingreso de Importe -->
-  <div id="screen-input" class="flex flex-col items-center flex-1 w-full max-w-sm mx-auto mt-4 space-y-6">
-    
-    <!-- Display de Monto -->
+  <!-- PANTALLA 0: Menú Principal -->
+  <div id="screen-home" class="flex flex-col flex-1 mt-2">
+    <h1 class="text-xl font-bold text-white mb-6">Seleccione Operación</h1>
+    <div class="grid grid-cols-2 gap-4 flex-1 content-start">
+      <!-- Cobro Estándar -->
+      <button onclick="setMode('cobro')" class="bg-blue-800 p-4 rounded-2xl flex flex-col items-center justify-center gap-3 active:bg-blue-700 transition border border-blue-700">
+        <svg class="w-8 h-8 text-yellow-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+        <span class="text-sm font-semibold">Cobro NFC</span>
+      </button>
+      <!-- MSI -->
+      <button onclick="setMode('msi')" class="bg-blue-800 p-4 rounded-2xl flex flex-col items-center justify-center gap-3 active:bg-blue-700 transition border border-blue-700">
+        <svg class="w-8 h-8 text-yellow-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z"></path></svg>
+        <span class="text-sm font-semibold">Meses s/Int</span>
+      </button>
+      <!-- Cancelación -->
+      <button onclick="setMode('cancel')" class="bg-blue-800 p-4 rounded-2xl flex flex-col items-center justify-center gap-3 active:bg-blue-700 transition border border-red-500/50">
+        <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"></path></svg>
+        <span class="text-sm font-semibold">Cancelación</span>
+      </button>
+      <!-- Cobro QR -->
+      <button onclick="setMode('qr')" class="bg-blue-800 p-4 rounded-2xl flex flex-col items-center justify-center gap-3 active:bg-blue-700 transition border border-blue-700">
+        <svg class="w-8 h-8 text-yellow-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5zM15 15h.008v.008H15V15zm0 2.25h.008v.008H15v-.008zm2.25-2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008z"></path></svg>
+        <span class="text-sm font-semibold">Cobro QR</span>
+      </button>
+      <!-- Pago Servicios -->
+      <button onclick="setMode('service')" class="bg-blue-800 p-4 rounded-2xl flex flex-col items-center justify-center gap-3 active:bg-blue-700 transition border border-blue-700">
+        <svg class="w-8 h-8 text-yellow-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.821 1.608-2.02m1.166 6.082c1.474-.2 2.91-.484 4.305-.837l1.05-1.319a7.49 7.49 0 00-10.44-10.44l-1.32 1.05m8.31 8.31c-1.474.2-2.91.484-4.305.837l-1.05 1.319a7.49 7.49 0 0010.44 10.44l1.32-1.05m-8.31-8.31l-1.32-1.05"></path></svg>
+        <span class="text-sm font-semibold">Servicios</span>
+      </button>
+      <!-- Resumen (Corte) -->
+      <button onclick="setMode('summary')" class="bg-blue-800 p-4 rounded-2xl flex flex-col items-center justify-center gap-3 active:bg-blue-700 transition border border-blue-700">
+        <svg class="w-8 h-8 text-yellow-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9zm3.75 11.625a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"></path></svg>
+        <span class="text-sm font-semibold">Corte de Caja</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- PANTALLA SECRETA: PIN de Cancelación -->
+  <div id="screen-pin" class="hidden flex-col items-center flex-1 w-full max-w-sm mx-auto mt-4 space-y-6">
+    <h2 class="text-lg text-blue-200">PIN de Supervisor</h2>
+    <div class="flex gap-4 my-4">
+      <div id="pin-1" class="w-6 h-6 rounded-full border-2 border-yellow-400"></div>
+      <div id="pin-2" class="w-6 h-6 rounded-full border-2 border-yellow-400"></div>
+      <div id="pin-3" class="w-6 h-6 rounded-full border-2 border-yellow-400"></div>
+      <div id="pin-4" class="w-6 h-6 rounded-full border-2 border-yellow-400"></div>
+    </div>
+    <div class="grid grid-cols-3 gap-3 w-full flex-1 content-end mb-4">
+      <button onclick="inputPin('1')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl">1</button>
+      <button onclick="inputPin('2')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl">2</button>
+      <button onclick="inputPin('3')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl">3</button>
+      <button onclick="inputPin('4')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl">4</button>
+      <button onclick="inputPin('5')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl">5</button>
+      <button onclick="inputPin('6')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl">6</button>
+      <button onclick="inputPin('7')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl">7</button>
+      <button onclick="inputPin('8')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl">8</button>
+      <button onclick="inputPin('9')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl">9</button>
+      <div class="py-4"></div>
+      <button onclick="inputPin('0')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl">0</button>
+      <button onclick="clearPin()" class="py-4 text-sm font-bold text-red-400 bg-blue-800 rounded-2xl">BORRAR</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA: Ingreso de Importe (Compartida) -->
+  <div id="screen-input" class="hidden flex-col items-center flex-1 w-full max-w-sm mx-auto mt-2 space-y-6">
     <div class="flex flex-col items-center">
-      <span class="text-blue-300 text-sm mb-1">Monto a cobrar</span>
+      <span id="input-title" class="text-blue-300 text-sm mb-1">Monto a cobrar</span>
       <div class="text-5xl font-bold tracking-tight text-yellow-400 flex items-center">
         <span class="text-3xl mr-1 text-yellow-500/80">$</span>
         <span id="amount-display">0.00</span>
       </div>
     </div>
-
-    <!-- Botones de Cantidades Frecuentes -->
-    <div class="grid grid-cols-4 gap-2 w-full">
-      <button onclick="setQuickAmount(100)" class="py-2 rounded-lg border border-yellow-400/50 text-yellow-400 font-semibold active:bg-yellow-400 active:text-blue-900 transition text-sm">$100</button>
-      <button onclick="setQuickAmount(150)" class="py-2 rounded-lg border border-yellow-400/50 text-yellow-400 font-semibold active:bg-yellow-400 active:text-blue-900 transition text-sm">$150</button>
-      <button onclick="setQuickAmount(200)" class="py-2 rounded-lg border border-yellow-400/50 text-yellow-400 font-semibold active:bg-yellow-400 active:text-blue-900 transition text-sm">$200</button>
-      <button onclick="setQuickAmount(250)" class="py-2 rounded-lg border border-yellow-400/50 text-yellow-400 font-semibold active:bg-yellow-400 active:text-blue-900 transition text-sm">$250</button>
-    </div>
-
-    <!-- Teclado Numérico -->
+    <!-- Teclado Numérico de Montos -->
     <div class="grid grid-cols-3 gap-3 w-full flex-1 content-end mb-4">
-      <!-- Fila 1 -->
-      <button onclick="appendDigit('1')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">1</button>
-      <button onclick="appendDigit('2')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">2</button>
-      <button onclick="appendDigit('3')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">3</button>
-      <!-- Fila 2 -->
-      <button onclick="appendDigit('4')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">4</button>
-      <button onclick="appendDigit('5')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">5</button>
-      <button onclick="appendDigit('6')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">6</button>
-      <!-- Fila 3 -->
-      <button onclick="appendDigit('7')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">7</button>
-      <button onclick="appendDigit('8')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">8</button>
-      <button onclick="appendDigit('9')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">9</button>
-      <!-- Fila 4 -->
-      <button onclick="appendDigit('00')" class="py-4 text-xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">00</button>
-      <button onclick="appendDigit('0')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">0</button>
-      <button onclick="deleteDigit()" class="py-4 text-2xl font-medium bg-blue-800 text-yellow-400 rounded-2xl active:bg-blue-700 transition flex justify-center items-center">
-        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"></path></svg>
+      <button onclick="appendDigit('1')" class="py-3 text-2xl font-medium bg-blue-800 rounded-2xl">1</button>
+      <button onclick="appendDigit('2')" class="py-3 text-2xl font-medium bg-blue-800 rounded-2xl">2</button>
+      <button onclick="appendDigit('3')" class="py-3 text-2xl font-medium bg-blue-800 rounded-2xl">3</button>
+      <button onclick="appendDigit('4')" class="py-3 text-2xl font-medium bg-blue-800 rounded-2xl">4</button>
+      <button onclick="appendDigit('5')" class="py-3 text-2xl font-medium bg-blue-800 rounded-2xl">5</button>
+      <button onclick="appendDigit('6')" class="py-3 text-2xl font-medium bg-blue-800 rounded-2xl">6</button>
+      <button onclick="appendDigit('7')" class="py-3 text-2xl font-medium bg-blue-800 rounded-2xl">7</button>
+      <button onclick="appendDigit('8')" class="py-3 text-2xl font-medium bg-blue-800 rounded-2xl">8</button>
+      <button onclick="appendDigit('9')" class="py-3 text-2xl font-medium bg-blue-800 rounded-2xl">9</button>
+      <button onclick="appendDigit('00')" class="py-3 text-xl font-medium bg-blue-800 rounded-2xl">00</button>
+      <button onclick="appendDigit('0')" class="py-3 text-2xl font-medium bg-blue-800 rounded-2xl">0</button>
+      <button onclick="deleteDigit()" class="py-3 text-2xl font-medium bg-blue-800 text-yellow-400 rounded-2xl flex justify-center items-center">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"></path></svg>
       </button>
     </div>
-
-    <!-- Botón de Acción -->
-    <button onclick="startNFCRead()" class="w-full py-4 bg-yellow-400 text-blue-900 hover:bg-yellow-300 active:scale-95 transition font-bold rounded-2xl shadow-lg shadow-yellow-500/20 text-lg uppercase tracking-wide">
-      Cobrar
+    <button onclick="processInputAmount()" class="w-full py-4 bg-yellow-400 text-blue-900 font-bold rounded-2xl text-lg uppercase shadow-lg shadow-yellow-500/20">
+      Continuar
     </button>
   </div>
 
-  <!-- Pantalla 2: Esperando Aproximación (NFC Activo) -->
-  <div id="screen-tap" class="hidden flex flex-col items-center justify-center flex-1 space-y-10">
+  <!-- PANTALLA: Selección de MSI -->
+  <div id="screen-msi" class="hidden flex-col items-center flex-1 w-full max-w-sm mx-auto mt-8 space-y-6">
+    <h2 class="text-xl font-bold">Seleccione Plazo</h2>
+    <p id="msi-amount" class="text-2xl text-yellow-400 mb-4">$0.00</p>
+    <div class="grid grid-cols-2 gap-4 w-full">
+      <button onclick="startNFCRead('3 Meses')" class="py-6 bg-blue-800 border border-blue-700 rounded-2xl text-xl font-bold">3 Meses</button>
+      <button onclick="startNFCRead('6 Meses')" class="py-6 bg-blue-800 border border-blue-700 rounded-2xl text-xl font-bold">6 Meses</button>
+      <button onclick="startNFCRead('9 Meses')" class="py-6 bg-blue-800 border border-blue-700 rounded-2xl text-xl font-bold">9 Meses</button>
+      <button onclick="startNFCRead('12 Meses')" class="py-6 bg-blue-800 border border-blue-700 rounded-2xl text-xl font-bold">12 Meses</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA: Cobro QR -->
+  <div id="screen-qr" class="hidden flex-col items-center justify-center flex-1 space-y-8">
+    <h2 class="text-xl font-bold">Escanee para pagar</h2>
+    <div class="bg-white p-4 rounded-xl">
+      <!-- Dummy QR Pattern -->
+      <svg class="w-48 h-48 text-black" viewBox="0 0 24 24" fill="currentColor">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h-3v2h3v-2zm-3 4h-2v-2h2v2zm2 2h-2v-2h2v2zm2-4h-2v2h2v-2zm-4 4h-2v2h2v-2z"></path>
+      </svg>
+    </div>
+    <p id="qr-amount" class="text-3xl font-bold text-yellow-400">$0.00</p>
+    <button onclick="onPaymentSuccess()" class="text-sm text-blue-300 underline mt-4">Simular pago recibido</button>
+  </div>
+
+  <!-- PANTALLA: Resumen del Día -->
+  <div id="screen-summary" class="hidden flex-col items-center flex-1 w-full mt-4 space-y-6">
+    <h2 class="text-xl font-bold mb-4">Corte de Caja</h2>
+    <div class="w-full bg-blue-800 p-6 rounded-2xl border border-blue-700 flex flex-col gap-4">
+      <div class="flex justify-between">
+        <span class="text-blue-300">Ventas Aprobadas</span>
+        <span class="font-bold">14</span>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-blue-300">Cancelaciones</span>
+        <span class="font-bold text-red-400">1</span>
+      </div>
+      <div class="border-t border-blue-700 my-2"></div>
+      <div class="flex justify-between items-end">
+        <span class="text-lg">Total Neto</span>
+        <span class="text-3xl font-bold text-yellow-400">$6,840.50</span>
+      </div>
+    </div>
+    <button onclick="goHome()" class="w-full py-4 mt-8 bg-slate-700 text-white font-bold rounded-2xl">Imprimir y Cerrar Lote</button>
+  </div>
+
+  <!-- PANTALLA: Esperando Aproximación (NFC Activo) -->
+  <div id="screen-tap" class="hidden flex-col items-center justify-center flex-1 space-y-10">
     <div class="text-center">
-      <p class="text-sm text-blue-300 uppercase tracking-widest">Cobro en proceso</p>
+      <p id="tap-action-text" class="text-sm text-blue-300 uppercase tracking-widest">Cobro en proceso</p>
       <p id="tap-amount" class="text-4xl font-bold text-yellow-400 mt-2">$0.00 MXN</p>
+      <p id="tap-msi-label" class="text-sm text-white mt-1 hidden"></p>
     </div>
     
     <div class="relative flex items-center justify-center mt-8">
       <div class="absolute w-56 h-56 rounded-full bg-yellow-400/20 pulse"></div>
       <div class="w-40 h-40 rounded-full border-2 border-yellow-400 flex items-center justify-center bg-blue-950/80 backdrop-blur z-10">
-        <svg class="w-20 h-20 text-yellow-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M8.5 10a4 4 0 015 0m-7.5-3a7.5 7.5 0 0110 0M3.5 4a11 11 0 0115 0" />
-        </svg>
+        <svg class="w-20 h-20 text-yellow-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 10a4 4 0 015 0m-7.5-3a7.5 7.5 0 0110 0M3.5 4a11 11 0 0115 0" /></svg>
       </div>
     </div>
     
     <div class="text-center z-10">
       <h2 class="text-2xl font-bold text-white">Acerque la tarjeta</h2>
-      <p class="text-blue-300 mt-2">A la parte trasera de este dispositivo</p>
+      <p class="text-blue-300 mt-2">A la parte trasera del dispositivo</p>
     </div>
-    
-    <button onclick="resetFlow()" class="px-6 py-2 text-sm text-blue-300 border border-blue-700 rounded-full mt-8">Cancelar</button>
   </div>
 
-  <!-- Pantalla 3: Éxito / Autorización -->
-  <div id="screen-success" class="hidden flex flex-col items-center justify-center flex-1 space-y-6">
-    <div class="w-28 h-28 rounded-full bg-yellow-400 flex items-center justify-center mb-4 shadow-lg shadow-yellow-400/30">
-      <svg class="w-16 h-16 text-blue-900" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-      </svg>
+  <!-- PANTALLA: Éxito -->
+  <div id="screen-success" class="hidden flex-col items-center justify-center flex-1 space-y-6">
+    <div id="success-icon-bg" class="w-28 h-28 rounded-full bg-yellow-400 flex items-center justify-center mb-4">
+      <svg class="w-16 h-16 text-blue-900" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
     </div>
     <div class="text-center">
-      <h2 class="text-3xl font-bold text-white mb-2">Aprobado</h2>
+      <h2 id="success-title" class="text-3xl font-bold text-white mb-2">Aprobado</h2>
       <div id="success-amount" class="text-4xl font-bold text-yellow-400 py-2">$0.00</div>
-      <p class="text-blue-300 text-sm mt-4">Autorización: <span class="text-white font-mono">084729</span></p>
-      <p class="text-blue-300 text-sm">NFC Tag •••• 4092</p>
+      <p class="text-blue-300 text-sm mt-4">Folio: <span class="text-white font-mono">084729</span></p>
     </div>
-    
-    <button onclick="resetFlow()" class="mt-8 w-full max-w-xs py-4 bg-blue-800 hover:bg-blue-700 text-white rounded-2xl font-semibold shadow-md">
-      Nueva Operación
-    </button>
+    <button onclick="goHome()" class="mt-8 w-full max-w-xs py-4 bg-blue-800 text-white rounded-2xl font-semibold shadow-md">Finalizar</button>
   </div>
 
   <script>
     // Variables de Estado
-    let amountStr = "0"; // Almacena el monto en centavos para desplazar los números
+    let currentMode = 'home'; 
+    let amountStr = "0";
+    let enteredPin = "";
+    const CORRECT_PIN = "1234";
 
+    // Navegación Básica
+    function hideAll() {
+      ['screen-home', 'screen-pin', 'screen-input', 'screen-msi', 'screen-qr', 'screen-summary', 'screen-tap', 'screen-success'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+        document.getElementById(id).classList.remove('flex');
+      });
+    }
+
+    function goHome() {
+      hideAll();
+      amountStr = "0";
+      enteredPin = "";
+      updateDisplay();
+      clearPinDisplay();
+      document.getElementById('screen-home').classList.add('flex');
+      document.getElementById('btn-back').classList.add('hidden');
+      document.getElementById('header-term').classList.remove('hidden');
+    }
+
+    function showScreen(id) {
+      hideAll();
+      document.getElementById(id).classList.add('flex');
+      document.getElementById('btn-back').classList.remove('hidden');
+      document.getElementById('header-term').classList.add('hidden');
+    }
+
+    // Lógica del Menú
+    function setMode(mode) {
+      currentMode = mode;
+      if (mode === 'cobro' || mode === 'msi') {
+        document.getElementById('input-title').innerText = "Monto a cobrar";
+        showScreen('screen-input');
+      } else if (mode === 'qr') {
+        document.getElementById('input-title').innerText = "Monto a cobrar con QR";
+        showScreen('screen-input');
+      } else if (mode === 'cancel') {
+        showScreen('screen-pin');
+      } else if (mode === 'service') {
+        document.getElementById('input-title').innerText = "Monto del Servicio";
+        showScreen('screen-input');
+      } else if (mode === 'summary') {
+        showScreen('screen-summary');
+      }
+    }
+
+    // Lógica Teclado PIN
+    function inputPin(digit) {
+      if (enteredPin.length < 4) {
+        enteredPin += digit;
+        updatePinDisplay();
+        if (enteredPin.length === 4) {
+          setTimeout(validatePin, 300);
+        }
+      }
+    }
+    
+    function clearPin() {
+      enteredPin = "";
+      updatePinDisplay();
+    }
+
+    function updatePinDisplay() {
+      for (let i = 1; i <= 4; i++) {
+        let dot = document.getElementById('pin-' + i);
+        if (i <= enteredPin.length) {
+          dot.classList.add('bg-yellow-400');
+        } else {
+          dot.classList.remove('bg-yellow-400');
+        }
+      }
+    }
+
+    function validatePin() {
+      if (enteredPin === CORRECT_PIN) {
+        enteredPin = "";
+        clearPinDisplay();
+        document.getElementById('input-title').innerText = "Monto a devolver";
+        showScreen('screen-input');
+      } else {
+        alert("PIN Incorrecto");
+        clearPin();
+      }
+    }
+
+    function clearPinDisplay() {
+      for (let i = 1; i <= 4; i++) document.getElementById('pin-' + i).classList.remove('bg-yellow-400');
+    }
+
+    // Lógica Teclado Montos
     function updateDisplay() {
       let val = parseInt(amountStr);
       let displayVal = (val / 100).toFixed(2);
-      
-      // Actualizar todas las pantallas
       document.getElementById('amount-display').innerText = displayVal;
       document.getElementById('tap-amount').innerText = "$" + displayVal + " MXN";
       document.getElementById('success-amount').innerText = "$" + displayVal;
+      document.getElementById('msi-amount').innerText = "$" + displayVal;
+      document.getElementById('qr-amount').innerText = "$" + displayVal;
     }
 
     function appendDigit(digit) {
       if (amountStr === "0") amountStr = digit;
       else amountStr += digit;
-      
-      // Limitar a $99,999.99 (7 dígitos) para evitar desbordes visuales
       if (amountStr.length > 7) amountStr = amountStr.slice(0, 7);
       updateDisplay();
     }
@@ -147,12 +320,19 @@
       updateDisplay();
     }
 
-    function setQuickAmount(amount) {
-      amountStr = (amount * 100).toString();
-      updateDisplay();
+    function processInputAmount() {
+      if (parseInt(amountStr) === 0) return;
+
+      if (currentMode === 'msi') {
+        showScreen('screen-msi');
+      } else if (currentMode === 'qr') {
+        showScreen('screen-qr');
+      } else {
+        startNFCRead();
+      }
     }
 
-    // Funciones Web Audio y Web NFC
+    // Flujo NFC y Web Audio
     function playBeep() {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
       const osc = ctx.createOscillator();
@@ -167,28 +347,28 @@
       osc.stop(ctx.currentTime + 0.3);
     }
 
-    async function startNFCRead() {
-      if (parseInt(amountStr) === 0) {
-        alert("Ingrese un monto mayor a cero.");
-        return;
+    async function startNFCRead(msiLabel = "") {
+      // Ajustar UI según modo
+      document.getElementById('tap-msi-label').classList.add('hidden');
+      let actionText = "Cobro en proceso";
+      
+      if (currentMode === 'cancel') actionText = "Devolución en proceso";
+      if (currentMode === 'service') actionText = "Pago de servicio";
+      if (currentMode === 'msi') {
+        document.getElementById('tap-msi-label').innerText = msiLabel;
+        document.getElementById('tap-msi-label').classList.remove('hidden');
       }
-
-      document.getElementById('screen-input').classList.add('hidden');
-      document.getElementById('screen-tap').classList.remove('hidden');
+      document.getElementById('tap-action-text').innerText = actionText;
+      
+      showScreen('screen-tap');
 
       if ('NDEFReader' in window) {
         try {
           const ndef = new NDEFReader();
           await ndef.scan();
-          
-          ndef.onreading = event => {
-            onPaymentSuccess();
-          };
-          ndef.onreadingerror = () => {
-            console.warn("Error de lectura");
-          };
+          ndef.onreading = event => onPaymentSuccess();
+          ndef.onreadingerror = () => console.warn("Error lectura");
         } catch (error) {
-          console.warn("Usando fallback manual:", error);
           document.getElementById('screen-tap').onclick = () => onPaymentSuccess();
         }
       } else {
@@ -200,18 +380,25 @@
       playBeep();
       if (navigator.vibrate) navigator.vibrate([100, 60, 140]);
       
-      document.getElementById('screen-tap').classList.add('hidden');
-      document.getElementById('screen-success').classList.remove('hidden');
+      let title = "Aprobado";
+      let bgClass = "bg-yellow-400";
+      
+      if (currentMode === 'cancel') {
+        title = "Cancelado";
+        bgClass = "bg-red-400";
+      } else if (currentMode === 'service') {
+        title = "Pago Exitoso";
+      }
+
+      document.getElementById('success-title').innerText = title;
+      document.getElementById('success-icon-bg').className = `w-28 h-28 rounded-full ${bgClass} flex items-center justify-center mb-4`;
+      
+      showScreen('screen-success');
+      document.getElementById('btn-back').classList.add('hidden'); // No regresar a medias
     }
 
-    function resetFlow() {
-      amountStr = "0";
-      updateDisplay();
-      
-      document.getElementById('screen-success').classList.add('hidden');
-      document.getElementById('screen-tap').classList.add('hidden');
-      document.getElementById('screen-input').classList.remove('hidden');
-    }
+    // Iniciar
+    goHome();
   </script>
 </body>
 </html>
