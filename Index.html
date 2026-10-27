@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Tap to Phone Prototype</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.15); opacity: 0.3; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .pulse { animation: pulse-ring 2s infinite ease-in-out; }
+  </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen flex flex-col justify-between p-6 select-none font-sans">
+
+  <!-- Header -->
+  <div class="flex justify-between items-center text-slate-400 text-sm">
+    <span>Terminal Activa: #0042</span>
+    <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+  </div>
+
+  <!-- Pantalla 1: Ingreso de Importe -->
+  <div id="screen-input" class="flex flex-col items-center justify-center flex-1 space-y-6">
+    <span class="text-slate-400 text-base">Monto a cobrar</span>
+    <div class="text-5xl font-bold tracking-tight text-white flex items-center">
+      <span class="text-3xl mr-1 text-slate-500">$</span>
+      <span id="amount-display">250.00</span>
+    </div>
+    <button onclick="startNFCRead()" class="w-full max-w-xs py-4 bg-blue-600 hover:bg-blue-500 active:scale-95 transition font-semibold rounded-2xl shadow-lg shadow-blue-500/30 text-lg">
+      Iniciar Cobro
+    </button>
+  </div>
+
+  <!-- Pantalla 2: Esperando Aproximación (NFC Activo) -->
+  <div id="screen-tap" class="hidden flex flex-col items-center justify-center flex-1 space-y-8">
+    <div class="relative flex items-center justify-center">
+      <div class="absolute w-44 h-44 rounded-full bg-blue-500/20 pulse"></div>
+      <div class="w-32 h-32 rounded-full border-2 border-blue-400 flex items-center justify-center bg-slate-800/80 backdrop-blur">
+        <!-- Ícono NFC Contactless -->
+        <svg class="w-16 h-16 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.5 10a4 4 0 015 0m-7.5-3a7.5 7.5 0 0110 0M3.5 4a11 11 0 0115 0" />
+        </svg>
+      </div>
+    </div>
+    <div class="text-center">
+      <h2 class="text-xl font-bold text-slate-100">Acerque tarjeta o tag</h2>
+      <p class="text-sm text-slate-400 mt-1">A la parte trasera de este dispositivo</p>
+      <p class="text-2xl font-bold text-blue-400 mt-4">$250.00 MXN</p>
+    </div>
+  </div>
+
+  <!-- Pantalla 3: Éxito / Autorización -->
+  <div id="screen-success" class="hidden flex flex-col items-center justify-center flex-1 space-y-4">
+    <div class="w-20 h-20 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-2">
+      <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+      </svg>
+    </div>
+    <h2 class="text-2xl font-bold text-white">¡Cobro Aprobado!</h2>
+    <p class="text-slate-400 text-sm">Aut: 928371 • Tarjeta **** 4092</p>
+    <div class="text-3xl font-bold text-emerald-400 py-2">$250.00</div>
+    <button onclick="resetFlow()" class="mt-6 px-8 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-sm font-medium">
+      Nueva Operación
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <div class="text-center text-xs text-slate-500">
+    Prototipo Tap on Phone • Web NFC Demo
+  </div>
+
+  <script>
+    // Audio sintetizado Web Audio API para no depender de archivos externos
+    function playBeep() {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(1760, ctx.currentTime); // 1760 Hz (La6)
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.3);
+    }
+
+    async function startNFCRead() {
+      // Cambio de pantalla a "Esperando Tap"
+      document.getElementById('screen-input').classList.add('hidden');
+      document.getElementById('screen-tap').classList.remove('hidden');
+
+      if ('NDEFReader' in window) {
+        try {
+          const ndef = new NDEFReader();
+          await ndef.scan();
+          
+          ndef.onreading = event => {
+            // Lectura exitosa de la etiqueta
+            onPaymentSuccess();
+          };
+          
+          ndef.onreadingerror = () => {
+            alert("Error al leer etiqueta. Intente de nuevo.");
+          };
+        } catch (error) {
+          console.warn("NFC Error/Cancelado, usando fallback manual por click:", error);
+          // Fallback para pruebas sin hardware NFC disponible
+          document.getElementById('screen-tap').onclick = () => onPaymentSuccess();
+        }
+      } else {
+        // En navegadores o iOS sin Web NFC, un click en la animación emula la lectura
+        console.warn("Web NFC no soportado en este navegador. Tocando pantalla emulará el tag.");
+        document.getElementById('screen-tap').onclick = () => onPaymentSuccess();
+      }
+    }
+
+    function onPaymentSuccess() {
+      // Feedback auditivo y háptico
+      playBeep();
+      if (navigator.vibrate) navigator.vibrate([100, 60, 140]);
+
+      // Mostrar pantalla de éxito
+      document.getElementById('screen-tap').classList.add('hidden');
+      document.getElementById('screen-success').classList.remove('hidden');
+    }
+
+    function resetFlow() {
+      document.getElementById('screen-success').classList.add('hidden');
+      document.getElementById('screen-input').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
