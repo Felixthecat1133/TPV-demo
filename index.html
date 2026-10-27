@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Tap to Phone Prototype</title>
+  <title>Tap to Phone - TPV Demo</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @keyframes pulse-ring {
@@ -12,74 +12,153 @@
       100% { transform: scale(0.95); opacity: 0.8; }
     }
     .pulse { animation: pulse-ring 2s infinite ease-in-out; }
+    /* Prevenir selección de texto al tocar rápidamente */
+    .no-select { user-select: none; -webkit-user-select: none; }
   </style>
 </head>
-<body class="bg-slate-900 text-white min-h-screen flex flex-col justify-between p-6 select-none font-sans">
+<body class="bg-blue-900 text-white min-h-screen flex flex-col justify-between p-4 no-select font-sans">
 
   <!-- Header -->
-  <div class="flex justify-between items-center text-slate-400 text-sm">
-    <span>Terminal Activa: #0042</span>
-    <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+  <div class="flex justify-between items-center text-blue-200 text-sm p-2">
+    <span>Terminal: #0042</span>
+    <div class="flex items-center gap-2">
+      <span>En línea</span>
+      <span class="inline-block w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
+    </div>
   </div>
 
   <!-- Pantalla 1: Ingreso de Importe -->
-  <div id="screen-input" class="flex flex-col items-center justify-center flex-1 space-y-6">
-    <span class="text-slate-400 text-base">Monto a cobrar</span>
-    <div class="text-5xl font-bold tracking-tight text-white flex items-center">
-      <span class="text-3xl mr-1 text-slate-500">$</span>
-      <span id="amount-display">250.00</span>
+  <div id="screen-input" class="flex flex-col items-center flex-1 w-full max-w-sm mx-auto mt-4 space-y-6">
+    
+    <!-- Display de Monto -->
+    <div class="flex flex-col items-center">
+      <span class="text-blue-300 text-sm mb-1">Monto a cobrar</span>
+      <div class="text-5xl font-bold tracking-tight text-yellow-400 flex items-center">
+        <span class="text-3xl mr-1 text-yellow-500/80">$</span>
+        <span id="amount-display">0.00</span>
+      </div>
     </div>
-    <button onclick="startNFCRead()" class="w-full max-w-xs py-4 bg-blue-600 hover:bg-blue-500 active:scale-95 transition font-semibold rounded-2xl shadow-lg shadow-blue-500/30 text-lg">
-      Iniciar Cobro
+
+    <!-- Botones de Cantidades Frecuentes -->
+    <div class="grid grid-cols-4 gap-2 w-full">
+      <button onclick="setQuickAmount(100)" class="py-2 rounded-lg border border-yellow-400/50 text-yellow-400 font-semibold active:bg-yellow-400 active:text-blue-900 transition text-sm">$100</button>
+      <button onclick="setQuickAmount(150)" class="py-2 rounded-lg border border-yellow-400/50 text-yellow-400 font-semibold active:bg-yellow-400 active:text-blue-900 transition text-sm">$150</button>
+      <button onclick="setQuickAmount(200)" class="py-2 rounded-lg border border-yellow-400/50 text-yellow-400 font-semibold active:bg-yellow-400 active:text-blue-900 transition text-sm">$200</button>
+      <button onclick="setQuickAmount(250)" class="py-2 rounded-lg border border-yellow-400/50 text-yellow-400 font-semibold active:bg-yellow-400 active:text-blue-900 transition text-sm">$250</button>
+    </div>
+
+    <!-- Teclado Numérico -->
+    <div class="grid grid-cols-3 gap-3 w-full flex-1 content-end mb-4">
+      <!-- Fila 1 -->
+      <button onclick="appendDigit('1')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">1</button>
+      <button onclick="appendDigit('2')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">2</button>
+      <button onclick="appendDigit('3')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">3</button>
+      <!-- Fila 2 -->
+      <button onclick="appendDigit('4')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">4</button>
+      <button onclick="appendDigit('5')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">5</button>
+      <button onclick="appendDigit('6')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">6</button>
+      <!-- Fila 3 -->
+      <button onclick="appendDigit('7')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">7</button>
+      <button onclick="appendDigit('8')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">8</button>
+      <button onclick="appendDigit('9')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">9</button>
+      <!-- Fila 4 -->
+      <button onclick="appendDigit('00')" class="py-4 text-xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">00</button>
+      <button onclick="appendDigit('0')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl active:bg-blue-700 transition">0</button>
+      <button onclick="deleteDigit()" class="py-4 text-2xl font-medium bg-blue-800 text-yellow-400 rounded-2xl active:bg-blue-700 transition flex justify-center items-center">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"></path></svg>
+      </button>
+    </div>
+
+    <!-- Botón de Acción -->
+    <button onclick="startNFCRead()" class="w-full py-4 bg-yellow-400 text-blue-900 hover:bg-yellow-300 active:scale-95 transition font-bold rounded-2xl shadow-lg shadow-yellow-500/20 text-lg uppercase tracking-wide">
+      Cobrar
     </button>
   </div>
 
   <!-- Pantalla 2: Esperando Aproximación (NFC Activo) -->
-  <div id="screen-tap" class="hidden flex flex-col items-center justify-center flex-1 space-y-8">
-    <div class="relative flex items-center justify-center">
-      <div class="absolute w-44 h-44 rounded-full bg-blue-500/20 pulse"></div>
-      <div class="w-32 h-32 rounded-full border-2 border-blue-400 flex items-center justify-center bg-slate-800/80 backdrop-blur">
-        <!-- Ícono NFC Contactless -->
-        <svg class="w-16 h-16 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+  <div id="screen-tap" class="hidden flex flex-col items-center justify-center flex-1 space-y-10">
+    <div class="text-center">
+      <p class="text-sm text-blue-300 uppercase tracking-widest">Cobro en proceso</p>
+      <p id="tap-amount" class="text-4xl font-bold text-yellow-400 mt-2">$0.00 MXN</p>
+    </div>
+    
+    <div class="relative flex items-center justify-center mt-8">
+      <div class="absolute w-56 h-56 rounded-full bg-yellow-400/20 pulse"></div>
+      <div class="w-40 h-40 rounded-full border-2 border-yellow-400 flex items-center justify-center bg-blue-950/80 backdrop-blur z-10">
+        <svg class="w-20 h-20 text-yellow-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M8.5 10a4 4 0 015 0m-7.5-3a7.5 7.5 0 0110 0M3.5 4a11 11 0 0115 0" />
         </svg>
       </div>
     </div>
-    <div class="text-center">
-      <h2 class="text-xl font-bold text-slate-100">Acerque tarjeta o tag</h2>
-      <p class="text-sm text-slate-400 mt-1">A la parte trasera de este dispositivo</p>
-      <p class="text-2xl font-bold text-blue-400 mt-4">$250.00 MXN</p>
+    
+    <div class="text-center z-10">
+      <h2 class="text-2xl font-bold text-white">Acerque la tarjeta</h2>
+      <p class="text-blue-300 mt-2">A la parte trasera de este dispositivo</p>
     </div>
+    
+    <button onclick="resetFlow()" class="px-6 py-2 text-sm text-blue-300 border border-blue-700 rounded-full mt-8">Cancelar</button>
   </div>
 
   <!-- Pantalla 3: Éxito / Autorización -->
-  <div id="screen-success" class="hidden flex flex-col items-center justify-center flex-1 space-y-4">
-    <div class="w-20 h-20 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-2">
-      <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+  <div id="screen-success" class="hidden flex flex-col items-center justify-center flex-1 space-y-6">
+    <div class="w-28 h-28 rounded-full bg-yellow-400 flex items-center justify-center mb-4 shadow-lg shadow-yellow-400/30">
+      <svg class="w-16 h-16 text-blue-900" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
       </svg>
     </div>
-    <h2 class="text-2xl font-bold text-white">¡Cobro Aprobado!</h2>
-    <p class="text-slate-400 text-sm">Aut: 928371 • Tarjeta **** 4092</p>
-    <div class="text-3xl font-bold text-emerald-400 py-2">$250.00</div>
-    <button onclick="resetFlow()" class="mt-6 px-8 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-sm font-medium">
+    <div class="text-center">
+      <h2 class="text-3xl font-bold text-white mb-2">Aprobado</h2>
+      <div id="success-amount" class="text-4xl font-bold text-yellow-400 py-2">$0.00</div>
+      <p class="text-blue-300 text-sm mt-4">Autorización: <span class="text-white font-mono">084729</span></p>
+      <p class="text-blue-300 text-sm">NFC Tag •••• 4092</p>
+    </div>
+    
+    <button onclick="resetFlow()" class="mt-8 w-full max-w-xs py-4 bg-blue-800 hover:bg-blue-700 text-white rounded-2xl font-semibold shadow-md">
       Nueva Operación
     </button>
   </div>
 
-  <!-- Footer -->
-  <div class="text-center text-xs text-slate-500">
-    Prototipo Tap on Phone • Web NFC Demo
-  </div>
-
   <script>
-    // Audio sintetizado Web Audio API para no depender de archivos externos
+    // Variables de Estado
+    let amountStr = "0"; // Almacena el monto en centavos para desplazar los números
+
+    function updateDisplay() {
+      let val = parseInt(amountStr);
+      let displayVal = (val / 100).toFixed(2);
+      
+      // Actualizar todas las pantallas
+      document.getElementById('amount-display').innerText = displayVal;
+      document.getElementById('tap-amount').innerText = "$" + displayVal + " MXN";
+      document.getElementById('success-amount').innerText = "$" + displayVal;
+    }
+
+    function appendDigit(digit) {
+      if (amountStr === "0") amountStr = digit;
+      else amountStr += digit;
+      
+      // Limitar a $99,999.99 (7 dígitos) para evitar desbordes visuales
+      if (amountStr.length > 7) amountStr = amountStr.slice(0, 7);
+      updateDisplay();
+    }
+
+    function deleteDigit() {
+      amountStr = amountStr.slice(0, -1);
+      if (amountStr === "") amountStr = "0";
+      updateDisplay();
+    }
+
+    function setQuickAmount(amount) {
+      amountStr = (amount * 100).toString();
+      updateDisplay();
+    }
+
+    // Funciones Web Audio y Web NFC
     function playBeep() {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = "sine";
-      osc.frequency.setValueAtTime(1760, ctx.currentTime); // 1760 Hz (La6)
+      osc.frequency.setValueAtTime(1760, ctx.currentTime);
       gain.gain.setValueAtTime(0.2, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
       osc.connect(gain);
@@ -89,7 +168,11 @@
     }
 
     async function startNFCRead() {
-      // Cambio de pantalla a "Esperando Tap"
+      if (parseInt(amountStr) === 0) {
+        alert("Ingrese un monto mayor a cero.");
+        return;
+      }
+
       document.getElementById('screen-input').classList.add('hidden');
       document.getElementById('screen-tap').classList.remove('hidden');
 
@@ -99,37 +182,34 @@
           await ndef.scan();
           
           ndef.onreading = event => {
-            // Lectura exitosa de la etiqueta
             onPaymentSuccess();
           };
-          
           ndef.onreadingerror = () => {
-            alert("Error al leer etiqueta. Intente de nuevo.");
+            console.warn("Error de lectura");
           };
         } catch (error) {
-          console.warn("NFC Error/Cancelado, usando fallback manual por click:", error);
-          // Fallback para pruebas sin hardware NFC disponible
+          console.warn("Usando fallback manual:", error);
           document.getElementById('screen-tap').onclick = () => onPaymentSuccess();
         }
       } else {
-        // En navegadores o iOS sin Web NFC, un click en la animación emula la lectura
-        console.warn("Web NFC no soportado en este navegador. Tocando pantalla emulará el tag.");
         document.getElementById('screen-tap').onclick = () => onPaymentSuccess();
       }
     }
 
     function onPaymentSuccess() {
-      // Feedback auditivo y háptico
       playBeep();
       if (navigator.vibrate) navigator.vibrate([100, 60, 140]);
-
-      // Mostrar pantalla de éxito
+      
       document.getElementById('screen-tap').classList.add('hidden');
       document.getElementById('screen-success').classList.remove('hidden');
     }
 
     function resetFlow() {
+      amountStr = "0";
+      updateDisplay();
+      
       document.getElementById('screen-success').classList.add('hidden');
+      document.getElementById('screen-tap').classList.add('hidden');
       document.getElementById('screen-input').classList.remove('hidden');
     }
   </script>
