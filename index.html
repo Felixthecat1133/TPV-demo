@@ -222,6 +222,7 @@
       enteredPin = "";
       updateDisplay();
       clearPinDisplay();
+      document.getElementById('screen-home').classList.remove('hidden');
       document.getElementById('screen-home').classList.add('flex');
       document.getElementById('btn-back').classList.add('hidden');
       document.getElementById('header-term').classList.remove('hidden');
@@ -229,6 +230,7 @@
 
     function showScreen(id) {
       hideAll();
+      document.getElementById(id).classList.remove('hidden');
       document.getElementById(id).classList.add('flex');
       document.getElementById('btn-back').classList.remove('hidden');
       document.getElementById('header-term').classList.add('hidden');
