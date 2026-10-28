@@ -32,32 +32,26 @@
   <div id="screen-home" class="flex flex-col flex-1 mt-2">
     <h1 class="text-xl font-bold text-white mb-6">Seleccione Operación</h1>
     <div class="grid grid-cols-2 gap-4 flex-1 content-start">
-      <!-- Cobro Estándar -->
       <button onclick="setMode('cobro')" class="bg-blue-800 p-4 rounded-2xl flex flex-col items-center justify-center gap-3 active:bg-blue-700 transition border border-blue-700">
         <svg class="w-8 h-8 text-yellow-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
         <span class="text-sm font-semibold">Cobro NFC</span>
       </button>
-      <!-- MSI -->
       <button onclick="setMode('msi')" class="bg-blue-800 p-4 rounded-2xl flex flex-col items-center justify-center gap-3 active:bg-blue-700 transition border border-blue-700">
         <svg class="w-8 h-8 text-yellow-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z"></path></svg>
         <span class="text-sm font-semibold">Meses s/Int</span>
       </button>
-      <!-- Cancelación -->
       <button onclick="setMode('cancel')" class="bg-blue-800 p-4 rounded-2xl flex flex-col items-center justify-center gap-3 active:bg-blue-700 transition border border-red-500/50">
         <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"></path></svg>
         <span class="text-sm font-semibold">Cancelación</span>
       </button>
-      <!-- Cobro QR -->
       <button onclick="setMode('qr')" class="bg-blue-800 p-4 rounded-2xl flex flex-col items-center justify-center gap-3 active:bg-blue-700 transition border border-blue-700">
         <svg class="w-8 h-8 text-yellow-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5zM15 15h.008v.008H15V15zm0 2.25h.008v.008H15v-.008zm2.25-2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008z"></path></svg>
         <span class="text-sm font-semibold">Cobro QR</span>
       </button>
-      <!-- Pago Servicios -->
       <button onclick="setMode('service')" class="bg-blue-800 p-4 rounded-2xl flex flex-col items-center justify-center gap-3 active:bg-blue-700 transition border border-blue-700">
         <svg class="w-8 h-8 text-yellow-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.821 1.608-2.02m1.166 6.082c1.474-.2 2.91-.484 4.305-.837l1.05-1.319a7.49 7.49 0 00-10.44-10.44l-1.32 1.05m8.31 8.31c-1.474.2-2.91.484-4.305.837l-1.05 1.319a7.49 7.49 0 0010.44 10.44l1.32-1.05m-8.31-8.31l-1.32-1.05"></path></svg>
         <span class="text-sm font-semibold">Servicios</span>
       </button>
-      <!-- Resumen (Corte) -->
       <button onclick="setMode('summary')" class="bg-blue-800 p-4 rounded-2xl flex flex-col items-center justify-center gap-3 active:bg-blue-700 transition border border-blue-700">
         <svg class="w-8 h-8 text-yellow-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9zm3.75 11.625a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"></path></svg>
         <span class="text-sm font-semibold">Corte de Caja</span>
@@ -88,6 +82,7 @@
       <button onclick="inputPin('0')" class="py-4 text-2xl font-medium bg-blue-800 rounded-2xl">0</button>
       <button onclick="clearPin()" class="py-4 text-sm font-bold text-red-400 bg-blue-800 rounded-2xl">BORRAR</button>
     </div>
+    <button onclick="goHome()" class="w-full py-4 text-blue-300 font-medium border border-blue-700 rounded-2xl">Regresar al Menú</button>
   </div>
 
   <!-- PANTALLA: Ingreso de Importe (Compartida) -->
@@ -99,7 +94,6 @@
         <span id="amount-display">0.00</span>
       </div>
     </div>
-    <!-- Teclado Numérico de Montos -->
     <div class="grid grid-cols-3 gap-3 w-full flex-1 content-end mb-4">
       <button onclick="appendDigit('1')" class="py-3 text-2xl font-medium bg-blue-800 rounded-2xl">1</button>
       <button onclick="appendDigit('2')" class="py-3 text-2xl font-medium bg-blue-800 rounded-2xl">2</button>
@@ -116,9 +110,10 @@
         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"></path></svg>
       </button>
     </div>
-    <button onclick="processInputAmount()" class="w-full py-4 bg-yellow-400 text-blue-900 font-bold rounded-2xl text-lg uppercase shadow-lg shadow-yellow-500/20">
-      Continuar
-    </button>
+    <div class="w-full flex gap-3">
+      <button onclick="goHome()" class="flex-1 py-4 text-blue-300 font-medium border border-blue-700 rounded-2xl">Regresar</button>
+      <button onclick="processInputAmount()" class="flex-[2] py-4 bg-yellow-400 text-blue-900 font-bold rounded-2xl text-lg uppercase shadow-lg shadow-yellow-500/20">Continuar</button>
+    </div>
   </div>
 
   <!-- PANTALLA: Selección de MSI -->
@@ -131,19 +126,20 @@
       <button onclick="startNFCRead('9 Meses')" class="py-6 bg-blue-800 border border-blue-700 rounded-2xl text-xl font-bold">9 Meses</button>
       <button onclick="startNFCRead('12 Meses')" class="py-6 bg-blue-800 border border-blue-700 rounded-2xl text-xl font-bold">12 Meses</button>
     </div>
+    <button onclick="goHome()" class="w-full py-4 mt-4 text-blue-300 font-medium border border-blue-700 rounded-2xl">Regresar al Menú</button>
   </div>
 
   <!-- PANTALLA: Cobro QR -->
   <div id="screen-qr" class="hidden flex-col items-center justify-center flex-1 space-y-8">
     <h2 class="text-xl font-bold">Escanee para pagar</h2>
     <div class="bg-white p-4 rounded-xl">
-      <!-- Dummy QR Pattern -->
       <svg class="w-48 h-48 text-black" viewBox="0 0 24 24" fill="currentColor">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h-3v2h3v-2zm-3 4h-2v-2h2v2zm2 2h-2v-2h2v2zm2-4h-2v2h2v-2zm-4 4h-2v2h2v-2z"></path>
       </svg>
     </div>
     <p id="qr-amount" class="text-3xl font-bold text-yellow-400">$0.00</p>
     <button onclick="onPaymentSuccess()" class="text-sm text-blue-300 underline mt-4">Simular pago recibido</button>
+    <button onclick="goHome()" class="w-full max-w-xs py-4 mt-8 text-blue-300 font-medium border border-blue-700 rounded-2xl">Regresar al Menú</button>
   </div>
 
   <!-- PANTALLA: Resumen del Día -->
@@ -164,7 +160,8 @@
         <span class="text-3xl font-bold text-yellow-400">$6,840.50</span>
       </div>
     </div>
-    <button onclick="goHome()" class="w-full py-4 mt-8 bg-slate-700 text-white font-bold rounded-2xl">Imprimir y Cerrar Lote</button>
+    <button onclick="goHome()" class="w-full py-4 mt-4 bg-slate-700 text-white font-bold rounded-2xl">Imprimir y Cerrar Lote</button>
+    <button onclick="goHome()" class="w-full py-4 text-blue-300 font-medium border border-blue-700 rounded-2xl">Regresar al Menú</button>
   </div>
 
   <!-- PANTALLA: Esperando Aproximación (NFC Activo) -->
@@ -186,6 +183,8 @@
       <h2 class="text-2xl font-bold text-white">Acerque la tarjeta</h2>
       <p class="text-blue-300 mt-2">A la parte trasera del dispositivo</p>
     </div>
+    
+    <button onclick="goHome()" class="px-6 py-2 text-sm text-blue-300 border border-blue-700 rounded-full mt-8">Cancelar Operación</button>
   </div>
 
   <!-- PANTALLA: Éxito -->
@@ -198,17 +197,15 @@
       <div id="success-amount" class="text-4xl font-bold text-yellow-400 py-2">$0.00</div>
       <p class="text-blue-300 text-sm mt-4">Folio: <span class="text-white font-mono">084729</span></p>
     </div>
-    <button onclick="goHome()" class="mt-8 w-full max-w-xs py-4 bg-blue-800 text-white rounded-2xl font-semibold shadow-md">Finalizar</button>
+    <button onclick="goHome()" class="mt-8 w-full max-w-xs py-4 bg-blue-800 text-white rounded-2xl font-semibold shadow-md">Finalizar y Regresar</button>
   </div>
 
   <script>
-    // Variables de Estado
     let currentMode = 'home'; 
     let amountStr = "0";
     let enteredPin = "";
     const CORRECT_PIN = "1234";
 
-    // Navegación Básica
     function hideAll() {
       ['screen-home', 'screen-pin', 'screen-input', 'screen-msi', 'screen-qr', 'screen-summary', 'screen-tap', 'screen-success'].forEach(id => {
         document.getElementById(id).classList.add('hidden');
@@ -236,7 +233,6 @@
       document.getElementById('header-term').classList.add('hidden');
     }
 
-    // Lógica del Menú
     function setMode(mode) {
       currentMode = mode;
       if (mode === 'cobro' || mode === 'msi') {
@@ -255,7 +251,6 @@
       }
     }
 
-    // Lógica Teclado PIN
     function inputPin(digit) {
       if (enteredPin.length < 4) {
         enteredPin += digit;
@@ -298,7 +293,6 @@
       for (let i = 1; i <= 4; i++) document.getElementById('pin-' + i).classList.remove('bg-yellow-400');
     }
 
-    // Lógica Teclado Montos
     function updateDisplay() {
       let val = parseInt(amountStr);
       let displayVal = (val / 100).toFixed(2);
@@ -334,7 +328,6 @@
       }
     }
 
-    // Flujo NFC y Web Audio
     function playBeep() {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
       const osc = ctx.createOscillator();
@@ -350,7 +343,6 @@
     }
 
     async function startNFCRead(msiLabel = "") {
-      // Ajustar UI según modo
       document.getElementById('tap-msi-label').classList.add('hidden');
       let actionText = "Cobro en proceso";
       
@@ -396,10 +388,9 @@
       document.getElementById('success-icon-bg').className = `w-28 h-28 rounded-full ${bgClass} flex items-center justify-center mb-4`;
       
       showScreen('screen-success');
-      document.getElementById('btn-back').classList.add('hidden'); // No regresar a medias
+      document.getElementById('btn-back').classList.add('hidden'); 
     }
 
-    // Iniciar
     goHome();
   </script>
 </body>
